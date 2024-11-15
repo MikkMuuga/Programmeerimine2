@@ -18,7 +18,5 @@ namespace KooliProjekt.Data
         public DbSet<Services> Services { get; set; }
         public DbSet<WorkersMachines> WorkersMachines { get; set; }
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<ApplicationDbContext> Applications { get; set; }
-
     }
 }
