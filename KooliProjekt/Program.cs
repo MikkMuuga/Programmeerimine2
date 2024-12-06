@@ -11,14 +11,31 @@ namespace KooliProjekt
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
-            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+            try
+            {
+                // Load and validate the connection string
+                var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(connectionString));
+                builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+                // Configure Identity
+                builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+                {
+                    options.SignIn.RequireConfirmedAccount = true;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            builder.Services.AddControllersWithViews();
+
+                // Add MVC Controllers and Razor Pages
+                builder.Services.AddControllersWithViews();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Startup configuration error: {ex.Message}");
+                throw; // Rethrow to halt application startup if configuration fails
+            }
 
             var app = builder.Build();
 
@@ -30,8 +47,7 @@ namespace KooliProjekt
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                app.UseHsts(); // Enforce HSTS for production environments
             }
 
             app.UseHttpsRedirection();

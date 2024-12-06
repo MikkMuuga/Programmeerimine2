@@ -17,6 +17,6 @@ namespace KooliProjekt.Data
 
         [Required]
         [StringLength(55)]
-        public string Contact { get; set; } 
+        public required string Contact { get; set; } 
     }
 }

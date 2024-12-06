@@ -1,5 +1,6 @@
 ﻿using KooliProjekt.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace KooliProjekt.Components
 {
